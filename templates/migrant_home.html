@@ -1,0 +1,295 @@
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <title>Migrant Connect</title>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <meta content="" name="keywords">
+        <meta content="" name="description">
+
+        <!-- Google Web Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Playball&display=swap" rel="stylesheet">
+
+        <!-- Icon Font Stylesheet -->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+        <!-- Libraries Stylesheet -->
+        <link href="../static/lib/animate/animate.min.css" rel="stylesheet">
+        <link href="../static/lib/lightbox/css/lightbox.min.css" rel="stylesheet">
+        <link href="../static/lib/owlcarousel/owl.carousel.min.css" rel="stylesheet">
+
+        <!-- Customized Bootstrap Stylesheet -->
+        <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Template Stylesheet -->
+        <link href="../static/css/style.css" rel="stylesheet">
+        <style>
+            .card-body img {
+    transition: transform 0.3s ease;
+}
+.card-body img:hover {
+    transform: scale(1.05);
+}
+.list-group-item {
+    font-size: 1rem;
+}
+.profile-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 1rem;
+}
+
+.profile-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1.2rem rgba(0, 0, 0, 0.15);
+}
+
+.profile-img {
+    transition: transform 0.3s ease;
+}
+.profile-img:hover {
+    transform: scale(1.08);
+}
+
+.bg-gradient::before {
+    content: "";
+    position: absolute;
+    top: -20%;
+    left: -20%;
+    width: 140%;
+    height: 140%;
+    background: linear-gradient(135deg, #c2e9fb, #a1c4fd);
+    border-radius: 50%;
+    z-index: 0;
+    opacity: 0.15;
+}
+#midCardModal .modal-content {
+    border-radius: 1rem;
+    background-color: #fefefe;
+}
+        </style>
+    </head>
+
+    <body>
+
+        <!-- Spinner Start -->
+        <div id="spinner" class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50  d-flex align-items-center justify-content-center">
+            <div class="spinner-grow text-primary" role="status"></div>
+        </div>
+        <!-- Spinner End -->
+
+
+        <!-- Navbar start -->
+        <div class="container-fluid nav-bar">
+            <div class="container">
+                <nav class="navbar navbar-light navbar-expand-lg py-4">
+                    <a href="index.html" class="navbar-brand">
+                        <h1 class="text-primary fw-bold mb-0">Migrant<span class="text-dark">Connect</span> </h1>
+                    </a>
+                    <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                        <span class="fa fa-bars text-primary"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarCollapse">
+                        <div class="navbar-nav mx-auto">
+                            <a href="/migrant_home" class="nav-item nav-link active mx-2">Home</a>
+                            <a href="/view_schemes" class="nav-item nav-link mx-2">view Schemes</a>
+                            <a href="/view_verification" class="nav-item nav-link mx-2">View Verification</a>
+                            <a href="/work_history" class="nav-item nav-link mx-2">Work History</a>
+                        </div>
+                        <a href="/logout" class="btn btn-primary py-2 px-4 d-none d-xl-inline-block rounded-pill">Logout</a>
+                    </div>
+                </nav>
+            </div>
+        </div>
+        <!-- Navbar End -->
+
+        <!-- Hero Start -->
+
+        <!-- About Satrt -->
+       <div class="container-fluid bg-light py-5 min-vh-100">
+    <div class="container">
+        <div class="row align-items-center justify-content-center g-5">
+            <div class="col-lg-6 text-center text-lg-start">
+                <h1 class="display-4 fw-bold text-primary mb-3">Welcome, <span class="text-dark">{{ migrant.name }} !</span></h1>
+                <p class="lead text-dark">
+                    We're glad to have you back. Here’s a quick summary of your registered profile. Make sure all details are up to date!
+                </p>
+                <ul class="list-group list-group-flush mt-4 text-start">
+                    <li class="list-group-item bg-transparent"><strong class="text-dark">Aadhar No:</strong> {{ migrant.aadhar }}</li>
+                    <li class="list-group-item bg-transparent"><strong class="text-dark">Occupation:</strong> {{ migrant.occupation }}</li>
+                    <li class="list-group-item bg-transparent"><strong class="text-dark">Gender:</strong> {{ migrant.gender }}</li>
+                    <li class="list-group-item bg-transparent"><strong class="text-dark">State:</strong> {{ migrant.state }}</li>
+                    <li class="list-group-item bg-transparent"><strong class="text-dark">District:</strong> {{ migrant.district }}</li>
+                    <li class="list-group-item bg-transparent"><strong class="text-dark">Languages:</strong> {{ migrant.language or 'N/A' }}</li>
+                </ul>
+                <div class="mt-4" style="margin-left: -20px;">
+                    {% if migrant.status == 1 %}
+<!-- MID Card Button -->
+<div class="text-center mt-4">
+    <button class="btn btn-success rounded-pill px-4 py-2 shadow" data-bs-toggle="modal" data-bs-target="#midCardModal">
+        <i class="fas fa-id-card me-2"></i> View Your MID Card
+    </button>
+</div>
+
+<!-- MID Card Modal -->
+<div class="modal fade" id="midCardModal" tabindex="-1" aria-labelledby="midCardModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content p-4">
+      <div class="modal-header border-0">
+        <h5 class="modal-title fw-bold text-primary" id="midCardModalLabel">Migrant Identification Card</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body" id="midCardContent">
+        <div class="card mx-auto shadow-lg" style="max-width: 700px; border-radius: 8px; border: 1px solid #ccc;">
+    <div class="card-body p-0" style="background-color: white;">
+
+        <!-- Header -->
+        <div class="d-flex align-items-center justify-content-between px-3 py-2" style="background-color: #f8f8f8; border-bottom: 1px solid #ccc;">
+            <img src="{{ url_for('static', filename='img/tn.png') }}" alt="Gov Logo" height="50">
+            <div class="text-center">
+                <h6 class="mb-0 fw-bold" style="font-size: 14px;">Government of Tamil Nadu</h6>
+                <p class="mb-0" style="font-size: 12px;">தமிழ்நாடு அரசு</p>
+            </div>
+            <img src="{{ url_for('static', filename='img/tn1.png') }}" alt="UIDAI Logo" height="50">
+        </div>
+
+        <!-- Name and Photo Row -->
+        <!-- Name and Photo Row -->
+<div class="row p-3">
+    <div class="col-md-3 text-center">
+        <img src="{{ url_for('static', filename='uploads/' + migrant.photo) if migrant.photo else url_for('static', filename='img/default_user.png') }}"
+             class="img-thumbnail border border-2"
+             width="100" height="120" alt="Photo">
+    </div>
+    <div class="col-md-6 text-start">
+        <h5 class="fw-bold text-dark">{{ migrant.name }}</h5>
+        <p class="mb-1"><strong>MID ID:</strong> 
+            {{ migrant.migrant_id[:5] }} {{ migrant.migrant_id[5:10] }}
+        </p>
+        <p class="mb-1"><strong>Email:</strong> {{ migrant.email }}</p>
+        <p class="mb-1"><strong>Contact:</strong> {{ migrant.contact }}</p>
+        <p class="mb-1"><strong>Address:</strong> {{ migrant.current_address or 'Not available' }}</p>
+    </div>
+    <div class="col-md-3 text-center">
+        {% if migrant.qr_filename %}
+            <img src="{{ url_for('static', filename='qr_codes/' + migrant.qr_filename) }}" alt="QR Code" width="100" height="100">
+            <p class="text-muted small">Scan QR</p>
+        {% else %}
+            <p class="text-danger small">QR Code Not Available</p>
+        {% endif %}
+    </div>
+</div>
+
+
+        <!-- Color Bands -->
+        <div style="height: 8px; background: linear-gradient(to right, #f44336, #ff9800, #4caf50); border-radius: 0 0 8px 8px;"></div>
+        <!-- Footer Label Like Aadhaar Card -->
+<div class="text-center py-2" style="background-color: #f8f8f8; border-top: 1px solid #ccc;">
+    <p class="mb-0 fw-bold" style="font-size: 14px; letter-spacing: 1px;">Migrant Identification Card</p>
+</div>
+
+    </div>
+</div>
+      </div>
+
+      <div class="modal-footer justify-content-center border-0">
+        <button class="btn btn-primary rounded-pill px-4 shadow-sm" onClick="downloadMIDCard()">
+            <i class="fas fa-download me-2"></i> Download MID Card
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+    <div class="card border-0 shadow-lg bg-white profile-card position-relative overflow-hidden">
+        <div class="card-body p-4 position-relative">
+            <div class="bg-gradient position-absolute top-0 start-0 w-100 h-100 opacity-10"></div>
+
+            <img src="{{ url_for('static', filename='uploads/' + migrant.photo) if migrant.photo else url_for('static', filename='img/default_user.png') }}" 
+                 class="img-fluid rounded-circle border border-4 border-primary shadow mb-3 profile-img"
+                 width="150" height="150" alt="Profile Photo">
+
+            <h4 class="text-primary fw-bold mb-1">{{ migrant.name }}</h4>
+            <p class="text-muted small mb-3"><i class="fas fa-map-marker-alt me-2 text-primary"></i> {{ migrant.current_address or 'Address not set' }}</p>
+
+            <div class="d-flex justify-content-center flex-column align-items-center gap-1">
+                <p class="text-muted m-0"><i class="fas fa-envelope me-2 text-dark"></i> {{ migrant.email or 'N/A' }}</p>
+                <p class="text-muted m-0"><i class="fas fa-phone-alt me-2 text-dark"></i> {{ migrant.contact }}</p>
+            </div>
+
+            <div class="mt-3">
+                {% if migrant.status == 1 %}
+                    <span class="badge rounded-pill bg-success px-3 py-2 fs-6"><i class="fas fa-check-circle me-1"></i> Approved</span>
+                {% elif migrant.status == 2 %}
+                    <span class="badge rounded-pill bg-danger px-3 py-2 fs-6"><i class="fas fa-times-circle me-1"></i> Rejected</span>
+                {% else %}
+                    <span class="badge rounded-pill bg-warning text-dark px-3 py-2 fs-6"><i class="fas fa-hourglass-half me-1"></i> Pending</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+        </div>
+    </div>
+</div>
+
+        <!-- About End -->
+
+        <!-- Copyright Start -->
+        <div class="container-fluid copyright bg-dark py-4">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                        <span class="text-light">
+                            <i class="fas fa-copyright text-light me-2"></i>
+                            <a href="#" class="text-light text-decoration-none">Migrant Connect</a>, All rights reserved.
+                        </span>
+                    </div>
+                    <div class="col-md-6 my-auto text-center text-md-end text-white">
+                        Empowering Migrants with Trusted Support & Resources
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Copyright End -->
+         <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+        <script>
+        function downloadMIDCard() {
+            const card = document.getElementById("midCardContent");
+            html2canvas(card).then(canvas => {
+                const link = document.createElement("a");
+                link.download = "MID_Card_{{ migrant.name }}.png";
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+            });
+        }
+        </script>
+
+
+
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-md-square btn-primary rounded-circle back-to-top"><i class="fa fa-arrow-up"></i></a>   
+
+        
+        <!-- JavaScript Libraries -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="../static/lib/wow/wow.min.js"></script>
+        <script src="../static/lib/easing/easing.min.js"></script>
+        <script src="../static/lib/waypoints/waypoints.min.js"></script>
+        <script src="../static/lib/counterup/counterup.min.js"></script>
+        <script src="../static/lib/lightbox/js/lightbox.min.js"></script>
+        <script src="../static/lib/owlcarousel/owl.carousel.min.js"></script>
+
+        <!-- Template Javascript -->
+        <script src="../static/js/main.js"></script>
+    </body>
+</html>

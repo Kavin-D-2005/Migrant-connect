@@ -1,0 +1,176 @@
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <title>Migrant Connect</title>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <meta content="" name="keywords">
+        <meta content="" name="description">
+
+        <!-- Google Web Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Playball&display=swap" rel="stylesheet">
+
+        <!-- Icon Font Stylesheet -->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+        <!-- Libraries Stylesheet -->
+        <link href="../static/lib/animate/animate.min.css" rel="stylesheet">
+        <link href="../static/lib/lightbox/css/lightbox.min.css" rel="stylesheet">
+        <link href="../static/lib/owlcarousel/owl.carousel.min.css" rel="stylesheet">
+
+        <!-- Customized Bootstrap Stylesheet -->
+        <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Template Stylesheet -->
+        <link href="../static/css/style.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+        <style>
+            .table td, .table th {
+            vertical-align: middle;
+        }
+        .btn-sm {
+            margin: 2px;
+        }
+        .badge {
+            font-size: 0.9em;
+        }
+         .modal-body strong {
+        display: inline-block;
+        width: 130px;
+    }
+    .img-thumbnail {
+        border: 2px solid #007bff;
+        border-radius: 10px;
+    }
+        </style>
+    </head>
+
+    <body>
+
+        <!-- Spinner Start -->
+        <div id="spinner" class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50  d-flex align-items-center justify-content-center">
+            <div class="spinner-grow text-primary" role="status"></div>
+        </div>
+        <!-- Spinner End -->
+
+
+        <!-- Navbar start -->
+        <div class="container-fluid nav-bar">
+            <div class="container">
+                <nav class="navbar navbar-light navbar-expand-lg py-4">
+                    <a href="index.html" class="navbar-brand">
+                        <h1 class="text-primary fw-bold mb-0">Migrant<span class="text-dark">Connect</span> </h1>
+                    </a>
+                    <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                        <span class="fa fa-bars text-primary"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarCollapse">
+                        <div class="navbar-nav mx-auto">
+                            <a href="/admin_home" class="nav-item nav-link mx-2">Home</a>
+                            <a href="/add_manage_scheme" class="nav-item nav-link mx-2">Add & Manage Scheme</a>
+                            <a href="/view_user" class="nav-item nav-link active mx-2">View Migrant History</a>
+                            <a href="/migrant_map" class="nav-item nav-link mx-2">Migrants Location</a>
+                        </div>
+                        <a href="/logout" class="btn btn-primary py-2 px-4 d-none d-xl-inline-block rounded-pill">Logout</a>
+                    </div>
+                </nav>
+            </div>
+        </div>
+       <div class="container mt-4">
+    <h2 class="mb-4">All Migrants - Work History & Locations</h2>
+
+    {% for migrant in migrants %}
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title text-success">{{ migrant.name }}</h5>
+            <p><strong>Occupation:</strong> {{ migrant.occupation }}</p>
+            <p><strong>Username:</strong> {{ migrant.username }}</p>
+            <p><strong>Job Status:</strong>
+                {% if migrant.job_status == 'hired' %}
+                    <span class="badge bg-success">Hired</span>
+                {% elif migrant.job_status == 'pending' %}
+                    <span class="badge bg-warning">Pending</span>
+                {% else %}
+                    <span class="badge bg-secondary">Not Assigned</span>
+                {% endif %}
+            </p>
+
+            {% if migrant.work_latitude and migrant.work_longitude %}
+            <p><strong>Work Address:</strong> <span id="address-{{ migrant.id }}">Loading address...</span></p>
+            <div id="map-{{ migrant.id }}" style="height: 300px;" class="rounded shadow-sm mt-2"></div>
+
+            <script>
+                (function() {
+                    var lat = {{ migrant.work_latitude }};
+                    var lon = {{ migrant.work_longitude }};
+                    var mapId = "map-{{ migrant.id }}";
+                    var addressId = "address-{{ migrant.id }}";
+
+                    var map = L.map(mapId).setView([lat, lon], 13);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '&copy; OpenStreetMap contributors'
+                    }).addTo(map);
+
+                    var marker = L.marker([lat, lon]).addTo(map);
+
+                    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            document.getElementById(addressId).innerText = data.display_name;
+                            marker.bindPopup(data.display_name).openPopup();
+                        })
+                        .catch(err => {
+                            document.getElementById(addressId).innerText = "Unable to fetch address.";
+                        });
+                })();
+            </script>
+            {% else %}
+            <p><strong>Work Address:</strong> Not Available</p>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+        <!-- Copyright Start -->
+        <div class="container-fluid copyright bg-dark py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                    <span class="text-light">
+                        <i class="fas fa-copyright text-light me-2"></i>
+                        <a href="#" class="text-light text-decoration-none">Migrant Connect</a>, All rights reserved.
+                    </span>
+                </div>
+                <div class="col-md-6 my-auto text-center text-md-end text-white">
+                    Empowering Migrants with Trusted Support & Resources
+                </div>
+            </div>
+        </div>
+</div>
+
+        <!-- Copyright End -->
+
+
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-md-square btn-primary rounded-circle back-to-top"><i class="fa fa-arrow-up"></i></a>   
+
+        
+        <!-- JavaScript Libraries -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="../static/lib/wow/wow.min.js"></script>
+        <script src="../static/lib/easing/easing.min.js"></script>
+        <script src="../static/lib/waypoints/waypoints.min.js"></script>
+        <script src="../static/lib/counterup/counterup.min.js"></script>
+        <script src="../static/lib/lightbox/js/lightbox.min.js"></script>
+        <script src="../static/lib/owlcarousel/owl.carousel.min.js"></script>
+
+        <!-- Template Javascript -->
+        <script src="../static/js/main.js"></script>
+    </body>
+</html>

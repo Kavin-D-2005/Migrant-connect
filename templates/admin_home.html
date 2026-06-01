@@ -1,0 +1,310 @@
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <title>Migrant Connect</title>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <meta content="" name="keywords">
+        <meta content="" name="description">
+
+        <!-- Google Web Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Playball&display=swap" rel="stylesheet">
+
+        <!-- Icon Font Stylesheet -->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+        <!-- Libraries Stylesheet -->
+        <link href="../static/lib/animate/animate.min.css" rel="stylesheet">
+        <link href="../static/lib/lightbox/css/lightbox.min.css" rel="stylesheet">
+        <link href="../static/lib/owlcarousel/owl.carousel.min.css" rel="stylesheet">
+
+        <!-- Customized Bootstrap Stylesheet -->
+        <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Template Stylesheet -->
+        <link href="../static/css/style.css" rel="stylesheet">
+        <style>
+            .table td, .table th {
+            vertical-align: middle;
+        }
+        .btn-sm {
+            margin: 2px;
+        }
+        .badge {
+            font-size: 0.9em;
+        }
+         .modal-body strong {
+        display: inline-block;
+        width: 130px;
+    }
+    .img-thumbnail {
+        border: 2px solid #007bff;
+        border-radius: 10px;
+    }
+        </style>
+    </head>
+
+    <body>
+
+        <!-- Spinner Start -->
+        <div id="spinner" class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50  d-flex align-items-center justify-content-center">
+            <div class="spinner-grow text-primary" role="status"></div>
+        </div>
+        <!-- Spinner End -->
+
+
+        <!-- Navbar start -->
+        <div class="container-fluid nav-bar">
+            <div class="container">
+                <nav class="navbar navbar-light navbar-expand-lg py-4">
+                    <a href="index.html" class="navbar-brand">
+                        <h1 class="text-primary fw-bold mb-0">Migrant<span class="text-dark">Connect</span> </h1>
+                    </a>
+                    <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                        <span class="fa fa-bars text-primary"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarCollapse">
+                        <div class="navbar-nav mx-auto">
+                            <a href="/admin_home" class="nav-item nav-link active mx-2">Home</a>
+                            <a href="/add_manage_scheme" class="nav-item nav-link mx-2">Add & Manage Scheme</a>
+                            <a href="/view_user" class="nav-item nav-link  mx-2">View Migrant History</a>
+                            <a href="/migrant_map" class="nav-item nav-link mx-2">Migrants Location</a>
+                        </div>
+                        <a href="/logout" class="btn btn-primary py-2 px-4 d-none d-xl-inline-block rounded-pill">Logout</a>
+                    </div>
+                </nav>
+            </div>
+        </div>
+        <!-- Navbar End -->
+
+        <!-- Hero Start -->
+
+        <!-- About Satrt -->
+       <div class="container-fluid py-5">
+    <div class="container">
+        <div class="bg-light p-5 rounded shadow-sm border border-primary">
+            <h2 class="text-center mb-4 text-primary">Admin Dashboard - Approve Migrants</h2>
+
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="alert alert-{{ category }} alert-dismissible fade show text-center" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                  </div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+            <!-- Migrant Approval Table -->
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle text-center">
+                    <thead class="table-primary">
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Contact</th>
+                            <th>State</th>
+                            <th>Nationality</th>
+                            <th>View Details</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for migrant in migrants %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ migrant.name }}</td>
+                            <td>{{ migrant.contact }}</td>
+                            <td>{{ migrant.state }}</td>
+                            <td>{{ migrant.nationality }}</td>
+                            <td>
+                                <!-- Trigger Modal -->
+                                <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#migrantModal{{ migrant.id }}">
+                                    View Details
+                                </button>
+                            </td>
+                            <td>
+                                {% if migrant.status == 1 %}
+                                    <span class="badge bg-success">Approved</span>
+                                {% elif migrant.status == 2 %}
+                                    <span class="badge bg-danger">Rejected</span>
+                                {% else %}
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form method="POST" action="/update_status" class="d-inline">
+                                    <input type="hidden" name="migrant_id" value="{{ migrant.id }}">
+                                    <button name="status" value="approved" class="btn btn-success btn-sm">Approve</button>
+                                    <button name="status" value="rejected" class="btn btn-danger btn-sm">Reject</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% for migrant in migrants %}
+<!-- Modal -->
+<div class="modal fade" id="migrantModal{{ migrant.id }}" tabindex="-1" aria-labelledby="modalLabel{{ migrant.id }}" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg">
+    <div class="modal-content shadow-lg rounded-4">
+      
+      <!-- Modal Header -->
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title fw-semibold" id="modalLabel{{ migrant.id }}">
+          <i class="bi bi-person-badge"></i> Migrant Profile - {{ migrant.name }}
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      
+      <!-- Modal Body -->
+      <div class="modal-body">
+        <div class="row g-4">
+
+          <!-- Personal Info -->
+          <div class="col-12">
+            <h6 class="text-uppercase text-primary border-bottom pb-1">Personal Information</h6>
+          </div>
+          <div class="col-md-6 small">
+            <p><strong>Aadhar No:</strong> {{ migrant.aadhar }}</p>
+            <p><strong>Gender:</strong> {{ migrant.gender }}</p>
+            <p><strong>Occupation:</strong> {{ migrant.occupation }}</p>
+            <p><strong>Languages:</strong> {{ migrant.language or 'N/A' }}</p>
+          </div>
+          <div class="col-md-6 small">
+            <p><strong>State:</strong> {{ migrant.state }}</p>
+            <p><strong>District:</strong> {{ migrant.district }}</p>
+            <p><strong>Country:</strong> {{ migrant.country }}</p>
+            <p><strong>Current Address:</strong> {{ migrant.current_address or 'N/A' }}</p>
+            <p><strong>Pin Code:</strong> {{ migrant.pin or 'N/A' }}</p>
+          </div>
+
+          <!-- Contact Info -->
+          <div class="col-12">
+            <h6 class="text-uppercase text-primary border-bottom pb-1 mt-3">Contact Information</h6>
+            <p class="small"><strong>Contact:</strong> {{ migrant.contact }}</p>
+            <p class="small"><strong>Email:</strong> {{ migrant.email or 'N/A' }}</p>
+          </div>
+
+          <!-- Documents -->
+          <div class="col-12">
+            <h6 class="text-uppercase text-primary border-bottom pb-1 mt-3">Uploaded Documents</h6>
+          </div>
+
+          <div class="col-md-3 text-center">
+            <p class="small fw-bold">Photo</p>
+            {% if migrant.photo %}
+              <a href="{{ url_for('static', filename='uploads/' + migrant.photo) }}" target="_blank">
+                <img src="{{ url_for('static', filename='uploads/' + migrant.photo) }}" class="img-thumbnail shadow-sm" width="100">
+              </a>
+            {% else %}
+              <span class="text-muted small">N/A</span>
+            {% endif %}
+          </div>
+
+          <div class="col-md-3 text-center">
+            <p class="small fw-bold">Aadhar</p>
+            {% if migrant.aadhar_proof %}
+              <a href="{{ url_for('static', filename='uploads/' + migrant.aadhar_proof) }}" target="_blank">
+                <img src="{{ url_for('static', filename='uploads/' + migrant.aadhar_proof) }}" class="img-thumbnail shadow-sm" width="100">
+              </a>
+            {% else %}
+              <span class="text-muted small">N/A</span>
+            {% endif %}
+          </div>
+
+          <div class="col-md-3 text-center">
+            <p class="small fw-bold">PAN</p>
+            {% if migrant.pan_proof %}
+              <a href="{{ url_for('static', filename='uploads/' + migrant.pan_proof) }}" target="_blank">
+                <img src="{{ url_for('static', filename='uploads/' + migrant.pan_proof) }}" class="img-thumbnail shadow-sm" width="100">
+              </a>
+            {% else %}
+              <span class="text-muted small">N/A</span>
+            {% endif %}
+          </div>
+
+          <div class="col-md-3 text-center">
+            <p class="small fw-bold">Ration</p>
+            {% if migrant.ration_proof %}
+              <a href="{{ url_for('static', filename='uploads/' + migrant.ration_proof) }}" target="_blank">
+                <img src="{{ url_for('static', filename='uploads/' + migrant.ration_proof) }}" class="img-thumbnail shadow-sm" width="100">
+              </a>
+            {% else %}
+              <span class="text-muted small">N/A</span>
+            {% endif %}
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer d-flex justify-content-between align-items-center">
+        {% if migrant.status == 1 %}
+          <span class="badge bg-success px-3 py-2">Approved</span>
+        {% elif migrant.status == 2 %}
+          <span class="badge bg-danger px-3 py-2">Rejected</span>
+        {% else %}
+          <span class="badge bg-warning text-dark px-3 py-2">Pending</span>
+        {% endif %}
+        
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% endfor %}
+
+
+        <!-- About End -->
+
+        <!-- Copyright Start -->
+        <div class="container-fluid copyright bg-dark py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                    <span class="text-light">
+                        <i class="fas fa-copyright text-light me-2"></i>
+                        <a href="#" class="text-light text-decoration-none">Migrant Connect</a>, All rights reserved.
+                    </span>
+                </div>
+                <div class="col-md-6 my-auto text-center text-md-end text-white">
+                    Empowering Migrants with Trusted Support & Resources
+                </div>
+            </div>
+        </div>
+</div>
+
+        <!-- Copyright End -->
+
+
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-md-square btn-primary rounded-circle back-to-top"><i class="fa fa-arrow-up"></i></a>   
+
+        
+        <!-- JavaScript Libraries -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="../static/lib/wow/wow.min.js"></script>
+        <script src="../static/lib/easing/easing.min.js"></script>
+        <script src="../static/lib/waypoints/waypoints.min.js"></script>
+        <script src="../static/lib/counterup/counterup.min.js"></script>
+        <script src="../static/lib/lightbox/js/lightbox.min.js"></script>
+        <script src="../static/lib/owlcarousel/owl.carousel.min.js"></script>
+
+        <!-- Template Javascript -->
+        <script src="../static/js/main.js"></script>
+    </body>
+</html>

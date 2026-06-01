@@ -1,0 +1,99 @@
+<html>
+<head>
+    <title>Migrant Location Map</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Leaflet CSS & JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <style>
+        #map {
+            height: 600px;
+            width: 100%;
+        }
+
+        .legend {
+            background: white;
+            padding: 10px;
+            line-height: 1.5;
+            border-radius: 6px;
+            box-shadow: 0 0 6px #aaa;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+
+<h2 style="text-align:center;">Migrant Locations</h2>
+<div id="map"></div>
+
+<div class="legend">
+    <strong>Legend:</strong><br>
+    🔴 Current Location<br>
+    🔵 Permanent State Location<br>
+    🟢 Dashed Line: Migration Path
+</div>
+
+<script>
+    const migrants = {{ migrant_data | tojson }};
+
+    var map = L.map('map').setView([22.5937, 78.9629], 5);  // Center of India
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: 'Map data © OpenStreetMap contributors',
+        maxZoom: 18
+    }).addTo(map);
+
+    const redIcon = new L.Icon({
+        iconUrl: 'https://maps.gstatic.com/mapfiles/ms2/micons/red-dot.png',
+        iconSize: [32, 32],
+        iconAnchor: [16, 32],
+        popupAnchor: [0, -32]
+    });
+
+    const blueIcon = new L.Icon({
+        iconUrl: 'https://maps.gstatic.com/mapfiles/ms2/micons/blue-dot.png',
+        iconSize: [32, 32],
+        iconAnchor: [16, 32],
+        popupAnchor: [0, -32]
+    });
+
+    migrants.forEach(migrant => {
+        // Add current location marker (Red)
+        if (migrant.work_latitude && migrant.work_longitude) {
+            L.marker([migrant.work_latitude, migrant.work_longitude], { icon: redIcon })
+                .addTo(map)
+                .bindPopup(`<strong>${migrant.name}</strong><br>Current Location`);
+        }
+
+        // Add permanent location marker (Blue)
+        if (migrant.perm_lat && migrant.perm_lng) {
+            L.marker([migrant.perm_lat, migrant.perm_lng], { icon: blueIcon })
+                .addTo(map)
+                .bindPopup(`<strong>${migrant.name}</strong><br>Permanent State: ${migrant.state}`);
+        }
+
+        // Draw line between permanent and current location
+        if (migrant.work_latitude && migrant.work_longitude && migrant.perm_lat && migrant.perm_lng) {
+            const latlngs = [
+                [migrant.perm_lat, migrant.perm_lng],
+                [migrant.work_latitude, migrant.work_longitude]
+            ];
+
+            L.polyline(latlngs, {
+                color: 'green',
+                weight: 2,
+                opacity: 0.7,
+                dashArray: '5, 5'
+            }).addTo(map);
+        }
+    });
+</script>
+
+</body>
+</html>

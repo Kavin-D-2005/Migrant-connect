@@ -1,0 +1,230 @@
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <title>Migrant Connect</title>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <meta content="" name="keywords">
+        <meta content="" name="description">
+
+        <!-- Google Web Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Playball&display=swap" rel="stylesheet">
+
+        <!-- Icon Font Stylesheet -->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+        <!-- Libraries Stylesheet -->
+        <link href="../static/lib/animate/animate.min.css" rel="stylesheet">
+        <link href="../static/lib/lightbox/css/lightbox.min.css" rel="stylesheet">
+        <link href="../static/lib/owlcarousel/owl.carousel.min.css" rel="stylesheet">
+
+        <!-- Customized Bootstrap Stylesheet -->
+        <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Template Stylesheet -->
+        <link href="../static/css/style.css" rel="stylesheet">
+        <style>
+            .form-label {
+        color: #333;
+    }
+
+    .form-control:focus {
+        border-color: #198754;
+        box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+    }
+
+    .btn-success {
+        font-weight: bold;
+        font-size: 1rem;
+    }
+        </style>
+    </head>
+
+    <body>
+
+        <!-- Spinner Start -->
+        <div id="spinner" class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50  d-flex align-items-center justify-content-center">
+            <div class="spinner-grow text-primary" role="status"></div>
+        </div>
+        <!-- Spinner End -->
+
+
+        <!-- Navbar start -->
+        <div class="container-fluid nav-bar">
+            <div class="container">
+                <nav class="navbar navbar-light navbar-expand-lg py-4">
+                    <a href="index.html" class="navbar-brand">
+                        <h1 class="text-primary fw-bold mb-0">Migrant<span class="text-dark">Connect</span> </h1>
+                    </a>
+                    <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                        <span class="fa fa-bars text-primary"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarCollapse">
+                        <div class="navbar-nav mx-auto">
+                            <a href="/" class="nav-item nav-link mx-2">Home</a>
+                            <a href="/employer_login" class="nav-item nav-link active mx-2">Employers</a>
+                            <a href="/migrant_login" class="nav-item nav-link mx-2">Migrants</a>
+                            <a href="/admin_login" class="nav-item nav-link mx-2">Admin</a>
+                        </div>
+                        <a href="/register_valitation" class="btn btn-primary py-2 px-4 d-none d-xl-inline-block rounded-pill">Sign Up</a>
+                    </div>
+                </nav>
+            </div>
+        </div>
+        <!-- Navbar End -->
+
+        <!-- Hero Start -->
+
+        <!-- About Satrt -->
+        <div class="container-fluid py-6">
+    <div class="container">
+        <div class="row g-5 align-items-center justify-content-center">
+            <div class="col-lg-6 wow fadeInLeft" data-wow-delay="0.2s">
+                <img src="../static/img/c1.png" class="img-fluid rounded" alt="Employer Register Image">
+            </div>
+            <div class="col-lg-6 wow fadeInRight" data-wow-delay="0.4s">
+                <small class="d-inline-block fw-bold text-dark text-uppercase bg-light border border-primary rounded-pill px-4 py-1 mb-3">Employer Registration</small>
+                <h2 class="display-6 mb-4">Create an Employer Account</h2>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show text-center" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+                {% endwith %}
+
+                <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+    <div class="row">
+        <!-- Company Name -->
+        <div class="col-md-6 mb-3">
+            <label for="company_name" class="form-label fw-bold">Company Name</label>
+            <input type="text" class="form-control" id="company_name" name="company_name" placeholder="Enter company name" required>
+            <div class="invalid-feedback">Please enter your company name.</div>
+        </div>
+
+        <!-- Employer Name -->
+        <div class="col-md-6 mb-3">
+            <label for="employer_name" class="form-label fw-bold">Employer Name</label>
+            <input type="text" class="form-control" id="employer_name" name="employer_name" placeholder="Enter your full name" required>
+            <div class="invalid-feedback">Please enter your name.</div>
+        </div>
+
+        <!-- Email -->
+        <div class="col-md-6 mb-3">
+            <label for="email" class="form-label fw-bold">Email</label>
+            <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email address" required>
+            <div class="invalid-feedback">Please enter a valid email.</div>
+        </div>
+
+        <!-- Contact Number -->
+        <div class="col-md-6 mb-3">
+            <label for="contact" class="form-label fw-bold">Contact Number</label>
+            <input type="text" class="form-control" id="contact" name="contact" placeholder="Enter contact number" required>
+            <div class="invalid-feedback">Please enter your contact number.</div>
+        </div>
+
+        <!-- Username -->
+        <!-- Profile Photo -->
+        <div class="col-md-6 mb-3">
+            <label for="photo" class="form-label fw-bold">Profile Photo</label>
+            <input type="file" class="form-control" id="photo" name="photo" accept="image/*" required>
+            <div class="invalid-feedback">Please upload a profile photo.</div>
+        </div>
+
+        <!-- Designation -->
+        <div class="col-md-6 mb-3">
+            <label for="designation" class="form-label fw-bold">Designation</label>
+            <input type="text" class="form-control" id="designation" name="designation" placeholder="Enter your designation" required>
+            <div class="invalid-feedback">Please enter your designation.</div>
+        </div>
+
+        <!-- Address -->
+        <div class="col-md-6 mb-3">
+            <label for="address" class="form-label fw-bold">Address</label>
+            <textarea class="form-control" id="address" name="address" rows="1" placeholder="Enter your address" required></textarea>
+            <div class="invalid-feedback">Please enter your address.</div>
+        </div>
+
+        <!-- Location -->
+        <div class="col-md-6 mb-3">
+            <label for="location" class="form-label fw-bold">Location</label>
+            <input type="text" class="form-control" id="location" name="location" placeholder="Enter location" required>
+            <div class="invalid-feedback">Please enter your location.</div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="username" class="form-label fw-bold">Username</label>
+            <input type="text" class="form-control" id="username" name="username" placeholder="Choose a username" required>
+            <div class="invalid-feedback">Username is required.</div>
+        </div>
+
+        <!-- Password -->
+        <div class="col-md-6 mb-3">
+            <label for="password" class="form-label fw-bold">Password</label>
+            <input type="password" class="form-control" id="password" name="password" placeholder="Create a password" required>
+            <div class="invalid-feedback">Please create a password.</div>
+        </div>
+    </div>
+
+    <div class="text-center">
+        <button type="submit" class="btn btn-success w-50 py-3 px-5 rounded-pill mt-3">
+            Register <i class="fas fa-user-plus ps-2"></i>
+        </button>
+    </div>
+</form>
+
+
+                <p class="mt-4">
+                    Already have an account? <a href="/login" class="text-primary fw-bold">Login here</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+        <!-- About End -->
+
+        <!-- Copyright Start -->
+        <div class="container-fluid copyright bg-dark py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                <span class="text-light">
+                    <i class="fas fa-copyright text-light me-2"></i>
+                    <a href="#" class="text-light text-decoration-none">Migrant Connect</a>, All rights reserved.
+                </span>
+            </div>
+            <div class="col-md-6 my-auto text-center text-md-end text-white">
+                Empowering Migrants with Trusted Support & Resources
+            </div>
+        </div>
+    </div>
+</div>
+
+        <!-- Copyright End -->
+
+
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-md-square btn-primary rounded-circle back-to-top"><i class="fa fa-arrow-up"></i></a>   
+
+        
+        <!-- JavaScript Libraries -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="../static/lib/wow/wow.min.js"></script>
+        <script src="../static/lib/easing/easing.min.js"></script>
+        <script src="../static/lib/waypoints/waypoints.min.js"></script>
+        <script src="../static/lib/counterup/counterup.min.js"></script>
+        <script src="../static/lib/lightbox/js/lightbox.min.js"></script>
+        <script src="../static/lib/owlcarousel/owl.carousel.min.js"></script>
+
+        <!-- Template Javascript -->
+        <script src="../static/js/main.js"></script>
+    </body>
+</html>
